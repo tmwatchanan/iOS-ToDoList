@@ -10,21 +10,19 @@ import UIKit
 
 class FirstViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
-    var itemsObject = UserDefaults.standard.object(forKey: "itemArray")
+    
+    var items: [String] = [""]
     
     @IBOutlet weak var itemTableView: UITableView!
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        itemsObject = UserDefaults.standard.object(forKey: "itemArray")
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        itemsObject = UserDefaults.standard.object(forKey: "itemArray")
-        
-        if let items = itemsObject as? NSArray {
-            print(items)
-        }
+        let itemsObject = UserDefaults.standard.object(forKey: "itemArray")
+        items = itemsObject as! [String]
+        print(items)
         itemTableView.reloadData()
     }
 
@@ -34,17 +32,22 @@ class FirstViewController: UIViewController, UITableViewDataSource, UITableViewD
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if let items = itemsObject as? NSArray {
-            return items.count
-        }
-        return 0
+        return items.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: UITableViewCellStyle.default, reuseIdentifier: "ToDoItemCell")
-        if let items = itemsObject as? NSArray {
-            cell.textLabel?.text = String(describing: items[indexPath.row])
-        }
+        cell.textLabel?.text = String(describing: items[indexPath.row])
         return cell
-    }}
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == UITableViewCellEditingStyle.delete {
+            items.remove(at: indexPath.row)
+            //            itemTableView.reloadData()
+            itemTableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.automatic)
+            UserDefaults.standard.set(items, forKey: "itemArray")
+        }
+    }
+}
 
