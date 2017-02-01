@@ -10,6 +10,8 @@ import UIKit
 
 class SecondViewController: UIViewController {
 
+    @IBOutlet weak var newItemLabel: UITextField!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -20,6 +22,21 @@ class SecondViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
 
-
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+    
+    @IBAction func AddNewItem(_ sender: Any) {
+        var items = UserDefaults.standard.object(forKey: "itemArray") as! [String]
+        items.append(newItemLabel.text!)
+        UserDefaults.standard.set(items, forKey: "itemArray")
+        newItemLabel.text = ""
+        print(items)
+    }
 }
 
